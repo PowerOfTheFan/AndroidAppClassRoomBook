@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Teaching Room Reservation</string>
+    <string name="exit_captione">Exit Application</string>
+    <string name="exit_mess">bạn muốn thoát chứ</string>
+    <string name="Button_yes">Yes</string>
+    <string name="Button_no">No</string>
 </resources>
