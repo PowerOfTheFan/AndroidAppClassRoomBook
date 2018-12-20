@@ -4,4 +4,6 @@
     <string name="exit_mess">bạn muốn thoát chứ</string>
     <string name="Button_yes">Yes</string>
     <string name="Button_no">No</string>
+    <string name="loginsuccess">Dang nhap thanh cong</string>
+    <string name="loginerror">Sai thong tin tai khoan hoac mat khau</string>
 </resources>

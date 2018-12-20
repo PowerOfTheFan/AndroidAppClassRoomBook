@@ -5,13 +5,37 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class Login extends AppCompatActivity {
+
+    EditText Name, Pass;
+    Button buttonPanelID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Name = (EditText)findViewById(R.id.Name);
+        Pass = (EditText)findViewById(R.id.Pass);
+        buttonPanelID = (Button)findViewById(R.id.buttonPanelID);
+
+        buttonPanelID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = "Admin";
+                String Password = "Admin";
+                if (Name.getText().toString() == username && Pass.getText().toString() == Password){
+                    Toast.makeText(getApplicationContext(),R.string.loginsuccess,Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),R.string.loginerror,Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
