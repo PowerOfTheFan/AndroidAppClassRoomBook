@@ -19,9 +19,9 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        Name = (EditText)findViewById(R.id.Name);
-        Pass = (EditText)findViewById(R.id.Pass);
-        buttonPanelID = (Button)findViewById(R.id.buttonPanelID);
+        Name = (EditText)findViewById(R.id.username_edtext);
+        Pass = (EditText)findViewById(R.id.passwd_edtext);
+        buttonPanelID = (Button)findViewById(R.id.login_button);
 
         buttonPanelID.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,26 +42,26 @@ public class Login extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         super.onOptionsItemSelected(item);
         switch (item.getItemId()) {
-            case R.id.buttonPanelID:
+            case R.id.login_button:
                 break;
-            case R.id.buttonPanelIDout:
-                new AlertDialog.Builder(this)
-                        .setTitle(R.string.exit_captione)
-                        .setMessage(R.string.exit_mess)
-                        .setNegativeButton(R.string.Button_yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .setPositiveButton(R.string.Button_no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                return;
-                            }
-                        })
-                        .show();
-                break;
+//            case R.id.buttonPanelIDout:
+//                new AlertDialog.Builder(this)
+//                        .setTitle(R.string.exit_captione)
+//                        .setMessage(R.string.exit_mess)
+//                        .setNegativeButton(R.string.Button_yes, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                finish();
+//                            }
+//                        })
+//                        .setPositiveButton(R.string.Button_no, new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                return;
+//                            }
+//                        })
+//                        .show();
+//                break;
         }
         return true;
     }
