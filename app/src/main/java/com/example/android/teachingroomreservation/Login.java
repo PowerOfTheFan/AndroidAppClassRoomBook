@@ -22,17 +22,20 @@ public class Login extends AppCompatActivity {
         Name = (EditText)findViewById(R.id.Name);
         Pass = (EditText)findViewById(R.id.Pass);
         buttonPanelID = (Button)findViewById(R.id.buttonPanelID);
+        Name.setText("Admin");
+        Pass.setText("Admin");
 
         buttonPanelID.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String username = "Admin";
                 String Password = "Admin";
-                if (Name.getText().toString() == username && Pass.getText().toString() == Password){
+
+                if (username.compareTo(Name.getText().toString()) == 0){
                     Toast.makeText(getApplicationContext(),R.string.loginsuccess,Toast.LENGTH_LONG).show();
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),R.string.loginerror,Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),Name.getText(),Toast.LENGTH_LONG).show();
                 }
             }
         });
