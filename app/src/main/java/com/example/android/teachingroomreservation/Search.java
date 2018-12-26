@@ -1,10 +1,6 @@
 package com.example.android.teachingroomreservation;
 
 import android.app.DatePickerDialog;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,11 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -27,24 +18,14 @@ import android.widget.Toast;
 
 import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
-import com.example.android.teachingroomreservation.handler.JSONParser;
 import com.example.android.teachingroomreservation.handler.RoomAvailable;
-import com.example.android.teachingroomreservation.handler.SubscribeRoomSession;
 import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 public class Search extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -54,12 +35,10 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     Spinner spnShift;
     TableLayout room_table;
     private int cDate, cMonth, cYear;
-    EditText editText;
 
 
     ArrayList<RoomAvailable> roomList;
 
-    ListView lv;
     private String url;
 
     @Override
@@ -67,8 +46,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-//        listArr = findViewById(R.id.listview1);
-//        lv = findViewById(R.id.listview1);
         room_table = findViewById(R.id.room_table);
         btnDatePicker = findViewById(R.id.btn_date);
         btnSearch = findViewById(R.id.btn_search); btnSearch.setEnabled(false);
@@ -133,40 +110,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         if (v == btnSearch) {
 
-//            LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout1);
-//
-//            TableLayout table = new TableLayout(this);
-//
-//            for (int i = 0; i < 10; i++) {
-//
-//                TableRow row = new TableRow(this);
-//
-//                for (int j = 0; j < 10; j++) {
-//
-//                    TextView cell = new android.support.v7.widget.AppCompatTextView(this) {
-//                        @Override
-//                        protected void onDraw(Canvas canvas) {
-//                            super.onDraw(canvas);
-//                            Rect rect = new Rect();
-//                            Paint paint = new Paint();
-//                            paint.setStyle(Paint.Style.STROKE);
-//                            paint.setColor(Color.BLUE);
-//                            paint.setStrokeWidth(20);
-//                            getLocalVisibleRect(rect);
-//                            canvas.drawRect(rect, paint);
-//                        }
-//
-//                    };
-//                    cell.setText(i + ", " + j);
-//                    cell.setPadding(6, 4, 6, 4);
-//                    row.addView(cell);
-//
-//                }
-//
-//                table.addView(row);
-//            }
-//
-//            layout.addView(table);
             String shift = spnShift.getSelectedItem().toString();
             String date = btnDatePicker.getText().toString();
             Log.e(TAG, "Date: " + date);
@@ -200,15 +143,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         protected Void doInBackground(String... urlStr) {
             HttpHandler sh = new HttpHandler();
             roomList = new ArrayList<>();
-//            String shift = spnShift.getSelectedItem().toString();
-//            String date = btnDatePicker.getText().toString();
-//            Log.e(TAG, "Date: " + date);
-//            // Making a request to url and getting response
-//            String url = "https://roomroomroom.herokuapp.com/Roomsession/search/"+date+"/"+shift;
-//            Log.e(TAG, "url: " + url);
-
             String url = urlStr[0];
-
             String jsonStr = sh.makeServiceCall(url);
 
             Log.e(TAG, "Response from url: " + jsonStr);
@@ -224,7 +159,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                         String shiftSession = room.getString(2);
                         String inDate = room.getString(3);
 
-//                        Log.e(TAG, "room info: " + id + roomName + shift + inDate);
 
                         RoomAvailable r = new RoomAvailable(id, roomName, shiftSession, inDate);
 
