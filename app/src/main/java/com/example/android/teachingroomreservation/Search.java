@@ -25,13 +25,23 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
 import com.example.android.teachingroomreservation.handler.JSONParser;
+import com.example.android.teachingroomreservation.handler.RoomAvailable;
+import com.example.android.teachingroomreservation.handler.SubscribeRoomSession;
+import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -42,12 +52,15 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     String TAG = Search.class.getSimpleName();
     Button btnDatePicker, btnSearch;
     Spinner spnShift;
+    TableLayout room_table;
     private int cDate, cMonth, cYear;
     EditText editText;
 
-    ArrayList<HashMap<String, String>> roomList;
+
+    ArrayList<RoomAvailable> roomList;
 
     ListView lv;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +68,15 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         setContentView(R.layout.activity_search);
 
 //        listArr = findViewById(R.id.listview1);
-        lv = findViewById(R.id.listview1);
+//        lv = findViewById(R.id.listview1);
+        room_table = findViewById(R.id.room_table);
         btnDatePicker = findViewById(R.id.btn_date);
-        btnSearch = findViewById(R.id.btn_search);
+        btnSearch = findViewById(R.id.btn_search); btnSearch.setEnabled(false);
         spnShift = findViewById(R.id.spinner_shift);
         spnShift.setOnItemSelectedListener(this);
         btnSearch.setOnClickListener(this);
         btnDatePicker.setOnClickListener(this);
-
-        roomList = new ArrayList<>();
+        getAllRoom();
         // Spinner Drop down elements
         List<String> shift = new ArrayList<String>();
         shift.add("1");
@@ -79,6 +92,11 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         // attaching data adapter to spinner
         spnShift.setAdapter(dataAdapter);
+    }
+
+    private void getAllRoom(){
+        this.url="https://roomroomroom.herokuapp.com/Roomsession/available-teacher";
+        new GetRoomAvailable().execute(url);
     }
 
     @Override
@@ -107,10 +125,10 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                                 frmDate = "0" + dayOfMonth;
                             }else frmDate = "" + dayOfMonth;
                             btnDatePicker.setText(frmDate + "-" + frmMonth + "-" + year);
-//                            btnDatePicker.setText(dayOfMonth + "-" + month + "-" + year);
                         }
                     }, cYear, cMonth, cDate);
             datePickerDialog.show();
+            btnSearch.setEnabled(true);
         }
 
         if (v == btnSearch) {
@@ -149,7 +167,13 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 //            }
 //
 //            layout.addView(table);
-            new GetContacts().execute();
+            String shift = spnShift.getSelectedItem().toString();
+            String date = btnDatePicker.getText().toString();
+            Log.e(TAG, "Date: " + date);
+            // Making a request to url and getting response
+            url = "https://roomroomroom.herokuapp.com/Roomsession/search/"+date+"/"+shift;
+            Log.e(TAG, "url: " + url);
+            new GetRoomAvailable().execute(url);
         }
     }
 
@@ -164,7 +188,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     }
 
-    private class GetContacts extends AsyncTask<Void, Void, Void> {
+    private class GetRoomAvailable extends AsyncTask<String, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -173,14 +197,17 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Void doInBackground(String... urlStr) {
             HttpHandler sh = new HttpHandler();
-            String shift = spnShift.getSelectedItem().toString();
-            String date = btnDatePicker.getText().toString();
-            Log.e(TAG, "Date: " + date);
-            // Making a request to url and getting response
-            String url = "https://roomroomroom.herokuapp.com/Roomsession/search/"+date+"/"+shift;
-            Log.e(TAG, "url: " + url);
+            roomList = new ArrayList<>();
+//            String shift = spnShift.getSelectedItem().toString();
+//            String date = btnDatePicker.getText().toString();
+//            Log.e(TAG, "Date: " + date);
+//            // Making a request to url and getting response
+//            String url = "https://roomroomroom.herokuapp.com/Roomsession/search/"+date+"/"+shift;
+//            Log.e(TAG, "url: " + url);
+
+            String url = urlStr[0];
 
             String jsonStr = sh.makeServiceCall(url);
 
@@ -197,44 +224,12 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                         String shiftSession = room.getString(2);
                         String inDate = room.getString(3);
 
-                        Log.e(TAG, "room info: " + id + roomName + shift + inDate);
+//                        Log.e(TAG, "room info: " + id + roomName + shift + inDate);
 
-                        HashMap<String, String> map = new HashMap<>();
-                        map.put("id", id);
-                        map.put("roomName", roomName);
-                        map.put("shiftSession", shiftSession);
-                        map.put("inDate", inDate);
+                        RoomAvailable r = new RoomAvailable(id, roomName, shiftSession, inDate);
 
-                        roomList.add(map);
+                        roomList.add(r);
                     }
-
-                    // looping through All Contacts
-//                    for (int i = 0; i < contacts.length(); i++) {
-//                        JSONObject c = contacts.getJSONObject(i);
-//                        String id = c.getString("id");
-//                        String name = c.getString("name");
-//                        String email = c.getString("email");
-//                        String address = c.getString("address");
-//                        String gender = c.getString("gender");
-//
-//                        // Phone node is JSON Object
-//                        JSONObject phone = c.getJSONObject("phone");
-//                        String mobile = phone.getString("mobile");
-//                        String home = phone.getString("home");
-//                        String office = phone.getString("office");
-//
-//                        // tmp hash map for single contact
-//                        HashMap<String, String> contact = new HashMap<>();
-//
-//                        // adding each child node to HashMap key => value
-//                        contact.put("id", id);
-//                        contact.put("name", name);
-//                        contact.put("email", email);
-//                        contact.put("mobile", mobile);
-//
-//                        // adding contact to contact list
-//                        contactList.add(contact);
-//                    }
                 } catch (final JSONException e) {
                     Log.e(TAG, "Json parsing error: " + e.getMessage());
                     runOnUiThread(new Runnable() {
@@ -266,12 +261,91 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            ListAdapter adapter = new SimpleAdapter(Search.this, roomList,
-                    R.layout.list_item, new String[]{"id", "roomname", "shift", "date"},
-                    new int[]{R.id.textview_idSession, R.id.textview_roomname, R.id.textview_shift, R.id.textview_date});
-            lv.setAdapter(adapter);
+            fillTable(roomList);
         }
     }
+
+    public void fillTable(ArrayList<RoomAvailable> list){
+        TableRow row;
+        room_table.removeAllViewsInLayout();
+        TextView txtIdroom, txtRoom, txtShift, txtDate;
+        Button btnBook;
+        TextView titleId, titleRoom, titleShift, titleDate;
+        titleId = new TextView(this);
+        titleRoom = new TextView(this);
+        titleShift = new TextView(this);
+        titleDate = new TextView(this);
+        titleId.setText("Mã phòng");
+        titleRoom.setText("Tên phòng");
+        titleShift.setText("Ca");
+        titleDate.setText("Ngày");
+
+        titleId.setTypeface(null,1); // text BOLD
+        titleRoom.setTypeface(null, 1);
+        titleShift.setTypeface(null, 1);
+        titleDate.setTypeface(null, 1);
+
+//        titleId.setWidth(10);
+//        titleRoom.setWidth(20);
+//        titleShift.setWidth(10);
+//        titleDate.setWidth(20);
+
+        row = new TableRow(this);
+        row.addView(titleId);
+        row.addView(titleRoom);
+        row.addView(titleShift);
+        row.addView(titleDate);
+        room_table.addView(row);
+
+
+
+        for (int i=0; i < roomList.size(); i++) {
+            row = new TableRow(this);
+
+            txtIdroom = new TextView(this);
+            txtRoom = new TextView(this);
+            txtShift = new TextView(this);
+            txtDate = new TextView(this);
+            btnBook = new Button(this);
+
+            txtIdroom.setText(list.get(i).getIdRoom());
+            txtRoom.setText(list.get(i).getRoomName());
+            txtShift.setText(list.get(i).getShiftSession());
+            txtDate.setText(list.get(i).getInDate());
+            btnBook.setText("Book");
+            final int index = i;
+
+            // set onClick btn
+            btnBook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(Search.this, roomList.get(index).getRoomName(), Toast.LENGTH_SHORT).show();
+//                    SubscribeRoomSession s = new SubscribeRoomSession();
+//                    s.send("https://roomroomroom.herokuapp.com/Roomsession/subscribe");
+                    String idr = roomList.get(index).getIdRoom();
+                    String ss = roomList.get(index).getShiftSession();
+                    FormatStringDate fmd = new FormatStringDate();
+                    // conver
+                    String d = fmd.dateFormat(roomList.get(index).getInDate());
+                    String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+2;
+                    Log.e(TAG, url);
+                    UpdateRoomSession updateRoomSession= new UpdateRoomSession();
+                    updateRoomSession.execute(url);
+                    getAllRoom();
+                }
+            });
+
+            row.addView(txtIdroom);
+            row.addView(txtRoom);
+            row.addView(txtShift);
+            row.addView(txtDate);
+            row.addView(btnBook);
+
+            room_table.addView(row);
+        }
+    }
+
+
 }
 
 //if(v == btnShift){
