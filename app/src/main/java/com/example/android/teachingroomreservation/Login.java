@@ -1,6 +1,7 @@
 package com.example.android.teachingroomreservation;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,8 +29,10 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 String username = "Admin";
                 String Password = "Admin";
-                if (Name.getText().toString() == username && Pass.getText().toString() == Password){
+                if (Name.getText().toString().equals(username) && Pass.getText().toString().equals(Password)){
                     Toast.makeText(getApplicationContext(),R.string.loginsuccess,Toast.LENGTH_LONG).show();
+                    Intent mh2 = new Intent(Login.this, Homepage.class);
+                    startActivity(mh2);
                 }
                 else {
                     Toast.makeText(getApplicationContext(),R.string.loginerror,Toast.LENGTH_LONG).show();
