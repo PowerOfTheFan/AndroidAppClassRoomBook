@@ -18,6 +18,10 @@ import java.net.URL;
 // chua dung duoc
 public class SubscribeRoomSession {
 
+    int idRoom;
+    int shiftSession;
+    String date;
+    int creator;
 
     private String httpPost(String myUrl) throws IOException, JSONException {
         String result = "";
@@ -27,7 +31,7 @@ public class SubscribeRoomSession {
         // 1. create HttpURLConnection
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setDoOutput(true);
-        conn.setRequestMethod("PUT");
+        conn.setRequestMethod("POST");
 //        conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 
         Log.e(SubscribeRoomSession.class.toString(), conn.toString());
@@ -94,10 +98,10 @@ public class SubscribeRoomSession {
     private JSONObject buidJsonObject() throws JSONException {
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("idRoom", 1);
-        jsonObject.put("idSession",  1);
-        jsonObject.put("date",  "24-12-2018");
-        jsonObject.put("idSubscriber", 2);
+        jsonObject.accumulate("room", idRoom);
+        jsonObject.accumulate("session",  shiftSession);
+        jsonObject.accumulate("date",  date);
+        jsonObject.accumulate("creator", creator);
 
         return jsonObject;
     }
@@ -111,5 +115,45 @@ public class SubscribeRoomSession {
         writer.flush();
         writer.close();
         os.close();
+    }
+
+    public SubscribeRoomSession(int idRoom, int shiftSession, String date, int creator) {
+        this.idRoom = idRoom;
+        this.shiftSession = shiftSession;
+        this.date = date;
+        this.creator = creator;
+    }
+    public SubscribeRoomSession(){}
+
+    public int getIdRoom() {
+        return idRoom;
+    }
+
+    public void setIdRoom(int idRoom) {
+        this.idRoom = idRoom;
+    }
+
+    public int getShiftSession() {
+        return shiftSession;
+    }
+
+    public void setShiftSession(int shiftSession) {
+        this.shiftSession = shiftSession;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public int getCreator() {
+        return creator;
+    }
+
+    public void setCreator(int creator) {
+        this.creator = creator;
     }
 }

@@ -1,7 +1,12 @@
 package com.example.android.teachingroomreservation;
 
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +24,7 @@ import android.widget.Toast;
 import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
 import com.example.android.teachingroomreservation.handler.RoomAvailable;
+import com.example.android.teachingroomreservation.handler.RoomSessionAvailable;
 import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;
@@ -30,6 +36,11 @@ import java.util.List;
 
 public class Search extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
+    private static final int NOTIFY_ME_ID=1337;
+    private int count=0;
+    Notification myNotication;
+    private NotificationManager notifyMgr=null;
+
     String TAG = Search.class.getSimpleName();
     Button btnDatePicker, btnSearch;
     Spinner spnShift;
@@ -37,7 +48,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     private int cDate, cMonth, cYear;
 
 
-    ArrayList<RoomAvailable> roomList;
+    ArrayList<RoomSessionAvailable> roomList;
 
     private String url;
 
@@ -45,6 +56,8 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        notifyMgr=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         room_table = findViewById(R.id.room_table);
         btnDatePicker = findViewById(R.id.btn_date);
@@ -73,7 +86,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     private void getAllRoom(){
         this.url="https://roomroomroom.herokuapp.com/Roomsession/available-teacher";
-        new GetRoomAvailable().execute(url);
+        new GetRoomSessionAvailable().execute(url);
     }
 
     @Override
@@ -116,7 +129,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
             // Making a request to url and getting response
             url = "https://roomroomroom.herokuapp.com/Roomsession/search/"+date+"/"+shift;
             Log.e(TAG, "url: " + url);
-            new GetRoomAvailable().execute(url);
+            new GetRoomSessionAvailable().execute(url);
         }
     }
 
@@ -131,7 +144,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     }
 
-    private class GetRoomAvailable extends AsyncTask<String, Void, Void> {
+    private class GetRoomSessionAvailable extends AsyncTask<String, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -160,7 +173,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                         String inDate = room.getString(3);
 
 
-                        RoomAvailable r = new RoomAvailable(id, roomName, shiftSession, inDate);
+                        RoomSessionAvailable r = new RoomSessionAvailable(id, roomName, shiftSession, inDate);
 
                         roomList.add(r);
                     }
@@ -199,7 +212,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         }
     }
 
-    public void fillTable(ArrayList<RoomAvailable> list){
+    public void fillTable(ArrayList<RoomSessionAvailable> list){
         TableRow row;
         room_table.removeAllViewsInLayout();
         TextView txtIdroom, txtRoom, txtShift, txtDate;
@@ -266,6 +279,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                     UpdateRoomSession updateRoomSession= new UpdateRoomSession();
                     updateRoomSession.execute(url);
                     getAllRoom();
+                    triggerNotification();
                 }
             });
 
@@ -279,6 +293,35 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         }
     }
 
+    /////////////////////// NOTIFICATION
+    public void triggerNotification() {
+
+        Intent intent = new Intent("com.example.android.teachingroomreservation.ReservationHistory");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, new Intent(this, ReservationHistory.class), 0);
+
+        NotificationCompat.Action declineAction = new NotificationCompat.Action
+                .Builder(R.drawable.ic_launcher_background, "Decline Request", pendingIntent).build();
+
+        Notification.Builder builder = new Notification.Builder(Search.this);
+//        builder.setAutoCancel(false);
+//        builder.setTicker("this is ticker text");
+        builder.setContentTitle("Class Room Booking");
+        builder.setContentText("Bạn đã đặt phòng thành công");
+        builder.setSmallIcon(R.drawable.ic_launcher_background);
+//        builder.setContentIntent(pendingIntent);
+//        builder.setOngoing(true);
+//        builder.setSubText("This is subtext...");   //API level 16
+        builder.setNumber(100);
+        builder.addAction(R.drawable.ic_launcher_background, "AAAAAAAAAAAA", pendingIntent);
+        builder.build();
+
+        myNotication = builder.getNotification();
+        notifyMgr.notify(NOTIFY_ME_ID, myNotication);
+    }
+
+    public void clearNotification() {
+        notifyMgr.cancel(NOTIFY_ME_ID);
+    }
 
 }
 

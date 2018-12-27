@@ -3,14 +3,12 @@ package com.example.android.teachingroomreservation.handler;
 public class RoomAvailable {
     String idRoom;
     String roomName;
-    String shiftSession;
-    String inDate;
+    String seatAmount;
 
-    public RoomAvailable(String idRoom, String roomName, String shiftSession, String inDate) {
+    public RoomAvailable(String idRoom, String roomName, String seatAmount) {
         this.idRoom = idRoom;
         this.roomName = roomName;
-        this.shiftSession = shiftSession;
-        this.inDate = inDate;
+        this.seatAmount = seatAmount;
     }
 
     public String getIdRoom() {
@@ -29,19 +27,11 @@ public class RoomAvailable {
         this.roomName = roomName;
     }
 
-    public String getShiftSession() {
-        return shiftSession;
+    public String getSeatAmount() {
+        return seatAmount;
     }
 
-    public void setShiftSession(String shiftSession) {
-        this.shiftSession = shiftSession;
-    }
-
-    public String getInDate() {
-        return inDate;
-    }
-
-    public void setInDate(String inDate) {
-        this.inDate = inDate;
+    public void setSeatAmount(String seatAmount) {
+        this.seatAmount = seatAmount;
     }
 }
