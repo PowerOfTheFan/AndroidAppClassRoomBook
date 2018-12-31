@@ -36,9 +36,9 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="30dp"
-                android:text="Login"
+                android:text="Member Login"
                 android:textSize="25dp"
-
+                android:textStyle="bold"
                 android:typeface="monospace" />
 
             <EditText
