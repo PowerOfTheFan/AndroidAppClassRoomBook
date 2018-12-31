@@ -23,8 +23,7 @@ import android.widget.Toast;
 
 import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
-import com.example.android.teachingroomreservation.handler.RoomAvailable;
-import com.example.android.teachingroomreservation.handler.RoomSessionAvailable;
+import com.example.android.teachingroomreservation.handler.RoomSession;
 import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;
@@ -48,7 +47,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     private int cDate, cMonth, cYear;
 
 
-    ArrayList<RoomSessionAvailable> roomList;
+    ArrayList<RoomSession> roomList;
 
     private String url;
 
@@ -173,7 +172,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                         String inDate = room.getString(3);
 
 
-                        RoomSessionAvailable r = new RoomSessionAvailable(id, roomName, shiftSession, inDate);
+                        RoomSession r = new RoomSession(id, roomName, shiftSession, inDate);
 
                         roomList.add(r);
                     }
@@ -212,7 +211,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         }
     }
 
-    public void fillTable(ArrayList<RoomSessionAvailable> list){
+    public void fillTable(ArrayList<RoomSession> list){
         TableRow row;
         room_table.removeAllViewsInLayout();
         TextView txtIdroom, txtRoom, txtShift, txtDate;

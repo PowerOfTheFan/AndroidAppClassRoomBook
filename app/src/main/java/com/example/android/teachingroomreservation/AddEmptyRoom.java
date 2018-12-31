@@ -16,12 +16,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
+import com.example.android.teachingroomreservation.handler.HttpPostRoomSession;
 import com.example.android.teachingroomreservation.handler.RoomAvailable;
-import com.example.android.teachingroomreservation.handler.RoomSessionAvailable;
-import com.example.android.teachingroomreservation.handler.SubscribeRoomSession;
-import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -246,8 +243,8 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
                     int  shiftSession = Integer.parseInt(spnShift.getSelectedItem().toString());
                     String date = btnDatePicker.getText().toString();
                     int creator = 1;
-                    SubscribeRoomSession s = new SubscribeRoomSession(idRoom, shiftSession, date, creator);
-                    s.send("https://roomroomroom.herokuapp.com/Roomsession/create");
+                    HttpPostRoomSession s = new HttpPostRoomSession(idRoom, shiftSession, date, creator);
+                    s.send("https://roomroomroom.herokuapp.com/Roomsession/create?room="+idRoom+"&session="+shiftSession+"&date="+date+"&creator="+creator);
 //                    String idr = roomList.get(index).getIdRoom();
 //                    String ss = roomList.get(index).getShiftSession();
 //                    FormatStringDate fmd = new FormatStringDate();
