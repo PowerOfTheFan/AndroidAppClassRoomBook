@@ -1,4 +1,5 @@
 <resources>
+    <!--Sang-->
     <string name="app_name">Teaching Room Reservation</string>
     <string name="exit_captione">Exit Application</string>
     <string name="exit_mess">Bạn muốn thoát chứ</string>
@@ -6,24 +7,26 @@
     <string name="Button_no">No</string>
     <string name="loginsuccess">Dang nhap thanh cong</string>
     <string name="loginerror">Sai thong tin tai khoan hoac mat khau</string>
+    <!--End Sang-->
+    =======
 
     <!--Trung-->
-        <!--search room layout-->
-        <string name="textview_Search">Tìm phòng</string>
-        <string name="textview_date">Ngày</string>
-        <string name="textview_Shift">Ca</string>
-        <string name="button_date">Chọn ngày</string>
-        <string name="button_Shift">Chọn ca</string>
-        <string name="button_SearchRoom">Tìm</string>
-        <!--end-->
+    <!--search room layout-->
+    <string name="textview_Search">Tìm phòng</string>
+    <string name="textview_date">Ngày</string>
+    <string name="textview_Shift">Ca</string>
+    <string name="button_date">Chọn ngày</string>
+    <string name="button_Shift">Chọn ca</string>
+    <string name="button_SearchRoom">Tìm</string>
+    <!--end-->
 
-        <!--result search room layout-->
-        <string name="textview_columnname_room">Phòng</string>
-        <string name="textview_columnname_date">Ngày</string>
-        <string name="textview_columnname_shift">Ca</string>
-        <string name="button_select">Chọn</string>
-        <string name="button_Ok">Gửi</string>
-        <!--end -->
+    <!--result search room layout-->
+    <string name="textview_columnname_room">Phòng</string>
+    <string name="textview_columnname_date">Ngày</string>
+    <string name="textview_columnname_shift">Ca</string>
+    <string name="button_select">Chọn</string>
+    <string name="button_Ok">Gửi</string>
+    <!--end -->
     <!--end Trung-->
-    
+
 </resources>
