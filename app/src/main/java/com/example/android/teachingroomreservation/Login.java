@@ -1,25 +1,19 @@
 package com.example.android.teachingroomreservation;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.android.teachingroomreservation.handler.HttpHandler;
-import com.example.android.teachingroomreservation.handler.RoomAvailable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import java.util.ArrayList;
 
 public class Login extends AppCompatActivity {
 
@@ -54,20 +48,21 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, emailEmp+"@@@@@@@@@@@@@@@@@@", Toast.LENGTH_SHORT).show();
                 // sau khi GetEmployee().execute(url) duoc thuc hien, neu emailEmp hoac idEmp... co gia tri thi login thanh cong
 
-                if (getEmailEmp() == null) {
+                if (emailEmp == null) {
 
                     Toast.makeText(getApplicationContext(),"Login fail",Toast.LENGTH_LONG).show();
                 }
                 else {
                     setEmailEmp(null);
-                    if(getPositionEmp() == "ADMIN"){
+                    Toast.makeText(getApplicationContext(), getPositionEmp(), Toast.LENGTH_LONG).show();
+                    if(getPositionEmp().equals("ADMIN")){
                         // goi acctivity cua admin, chuyen idEMP sang
-                        Toast.makeText(getApplicationContext(), R.string.loginsuccess, Toast.LENGTH_LONG).show();
+
                         Intent mh2 = new Intent(Login.this, AddEmptyRoom.class);
                         startActivity(mh2);
                     }else{
                         //goiacctivity teacher
-                        Toast.makeText(getApplicationContext(), R.string.loginsuccess, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getApplicationContext(), R.string.loginsuccess, Toast.LENGTH_LONG).show();
                         Intent mh2 = new Intent(Login.this, Search.class);
                         startActivity(mh2);
                     }
@@ -104,7 +99,6 @@ public class Login extends AppCompatActivity {
                         Login.this.setIdEmp(emp.getString(0));
                         Login.this.setEmailEmp(emp.getString(1));
                         Login.this.setNameEmp(emp.getString(2));
-                        System.out.println((emp.getString(2).toString()));
                         Login.this.setPositionEmp(emp.getString(3));
 
 
@@ -139,7 +133,6 @@ public class Login extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-//            fillTable(roomList);
         }
     }
 
@@ -149,6 +142,7 @@ public class Login extends AppCompatActivity {
 
     public void setEmailEmp(String emailEmp) {
         this.emailEmp = emailEmp;
+        System.out.println("setEmailEmp: " + emailEmp);
     }
 
     public String getIdEmp() {

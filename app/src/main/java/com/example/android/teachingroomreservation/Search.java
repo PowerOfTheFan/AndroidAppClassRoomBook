@@ -23,8 +23,7 @@ import android.widget.Toast;
 
 import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
-import com.example.android.teachingroomreservation.handler.RoomAvailable;
-import com.example.android.teachingroomreservation.handler.RoomSessionAvailable;
+import com.example.android.teachingroomreservation.ResultObject.RoomSessionAvailable;
 import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;

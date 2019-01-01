@@ -1,4 +1,4 @@
-package com.example.android.teachingroomreservation.handler;
+package com.example.android.teachingroomreservation.ResultObject;
 
 public class BookingHistory {
     String idRoom;
