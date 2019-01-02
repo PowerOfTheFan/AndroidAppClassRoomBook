@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -316,6 +317,13 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         myNotication = builder.getNotification();
         notifyMgr.notify(NOTIFY_ME_ID, myNotication);
+    }
+
+    @Override
+    public boolean onCreatePanelMenu(int featureId, Menu menu) {
+
+        getMenuInflater().inflate(R.menu.my_menu, menu);
+        return super.onCreatePanelMenu(featureId, menu);
     }
 
     public void clearNotification() {

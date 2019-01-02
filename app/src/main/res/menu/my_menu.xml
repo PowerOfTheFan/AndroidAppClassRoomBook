@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mtimphong"
+        android:title="Tim phong"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/mxls"
+        android:title="Xem lich su"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/mxp"
+        android:title="Xoa phong"
+        android:orderInCategory="100"/>
+</menu>
