@@ -10,7 +10,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -325,6 +327,30 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         getMenuInflater().inflate(R.menu.my_menu, menu);
         return super.onCreatePanelMenu(featureId, menu);
     }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.mtimphong:
+                Toast.makeText(this,"Bạn muốn tìm phòng",Toast.LENGTH_LONG).show();
+                break;
+            case R.id.mxls:
+                Toast.makeText(this,"Bạn muốn xóa lịch sử",Toast.LENGTH_LONG).show();
+                Intent i = new Intent(this, ReservationHistory.class);
+                startActivity(i);
+                break;
+            case R.id.mxp:
+                Toast.makeText(this,"Bạn muốn xóa phòng",Toast.LENGTH_LONG).show();
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     public void clearNotification() {
         notifyMgr.cancel(NOTIFY_ME_ID);
