@@ -67,7 +67,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
             BufferedReader idReader = new BufferedReader(new InputStreamReader(fileInputId));
             String idStr;
             while((idStr = idReader.readLine())!=null){
-                sbId.append(idStr).append("\n");
+                sbId.append(idStr).append("");
             }
             System.out.println("@@@@@@@@@@@@@@@@ Seach getIdEmp: "+sbId.toString());
             return sbId.toString();
@@ -86,7 +86,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        Intent intent = getIntent();
         ID_EMP = getIdEmp();
         System.out.println("@@@@@@@@@@@@@@@ Search :"+ID_EMP);
         if(ID_EMP == null){
