@@ -56,6 +56,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ login checkAccount exe");
         StringBuilder sbId = new StringBuilder();
         StringBuilder sbPos = new StringBuilder();
+        String test = null;
         try {
 //            FileInputStream fileInputId = this.openFileInput(Login.fileId);
             FileInputStream fileInputPos = this.openFileInput(Login.filePos);
@@ -68,17 +69,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 //                sbId.append(idStr).append("\n");
 //            }
             while ((posStr = posReader.readLine())!= null){
-                sbPos.append(posStr).append("\n");
+                sbPos.append(posStr).append("");
             }
 //            System.out.println(sbId.toString());
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ login checkAccount"+sbPos.toString());
+            test = sbPos.toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if(sbPos.toString().equals("ADMIN")){
+        if(("ADMIN").equals(test)){
             Intent intentAddEmptyRoom = new Intent(this, AddEmptyRoom.class);
             startActivity(intentAddEmptyRoom);
         }
@@ -96,7 +96,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
             String url = "https://roomroomroom.herokuapp.com/employee/login?email=" + username + "&id=" + Password;
             new GetEmployee().execute(url);
-            Toast.makeText(Login.this, emailEmp+"@@@@@@@@@@@@@@@@@@", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(Login.this, emailEmp+"@@@@@@@@@@@@@@@@@@", Toast.LENGTH_SHORT).show();
             if (emailEmp == null) {
                 Toast.makeText(getApplicationContext(),"Login fail",Toast.LENGTH_LONG).show();
             }else {
@@ -120,12 +120,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 
                 if(positionEmp.equals("ADMIN")){
                     Intent intentAddEmptyRoom = new Intent(this, AddEmptyRoom.class);
-//                    intentAddEmptyRoom.putExtra(extraIDEmp, idEmp);
                     startActivity(intentAddEmptyRoom);
                 }
                 if(positionEmp.equals("TEACHER")){
                     Intent intentSearch = new Intent(this, Search.class);
-//                    intentLogin.putExtra(extraIDEmp, idEmp);
                     startActivity(intentSearch);
                 }
             }
