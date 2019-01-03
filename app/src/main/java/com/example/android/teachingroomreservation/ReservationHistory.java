@@ -1,5 +1,6 @@
 package com.example.android.teachingroomreservation;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,20 +13,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.teachingroomreservation.ResultObject.BookingHistory;
+import com.example.android.teachingroomreservation.handler.CompareDay;
+import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
+import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ReservationHistory extends AppCompatActivity {
 
     final String TAG = ReservationHistory.class.getSimpleName();
-    String url = "https://roomroomroom.herokuapp.com/Roomsession/history/2";
+    String url = null;
     ArrayList<BookingHistory> bookingList;
 
     TableLayout bookingHistory_table;
+    String ID_EMP = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,12 @@ public class ReservationHistory extends AppCompatActivity {
 
         bookingHistory_table = findViewById(R.id.bookingHistory_table);
 
+        ID_EMP = getIdEmp();
+        if(ID_EMP == null){
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
+        }
+        url = "https://roomroomroom.herokuapp.com/Roomsession/history/"+2;
         new GetRoomBookingHistory().execute(url);
     }
 
@@ -106,7 +122,7 @@ public class ReservationHistory extends AppCompatActivity {
         }
     }
 
-    public void fillTable(ArrayList<BookingHistory> list){
+    public void fillTable(final ArrayList<BookingHistory> list){
         TableRow row;
         bookingHistory_table.removeAllViewsInLayout();
         TextView txtIdroom, txtRoom, txtShift, txtDate;
@@ -132,14 +148,14 @@ public class ReservationHistory extends AppCompatActivity {
 //        titleDate.setWidth(20);
 
         row = new TableRow(this);
-        row.addView(titleIdRoom);
+//        row.addView(titleIdRoom);
         row.addView(titleRoom);
         row.addView(titleShift);
         row.addView(titleDate);
         bookingHistory_table.addView(row);
 
 
-
+        final FormatStringDate fmd = new FormatStringDate();
         for (int i=0; i < list.size(); i++) {
             row = new TableRow(this);
 
@@ -152,31 +168,41 @@ public class ReservationHistory extends AppCompatActivity {
             txtIdroom.setText(list.get(i).getIdRoom());
             txtRoom.setText(list.get(i).getRoomName());
             txtShift.setText(list.get(i).getShiftSession());
-            txtDate.setText(list.get(i).getDate());
+            txtDate.setText(fmd.dateFormat(list.get(i).getDate()));
             btnCancel.setText("Xóa");
             final int index = i;
 
-            // set onClick btn
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            // kiem tra ngay bat dau > 2, cho phep xoa
+            CompareDay cpd = new CompareDay();
+            if(cpd.differanceDay(fmd.dateFormat(list.get(i).getDate())) >= 2){
+                // set onClick btn
+                final Button finalBtnCancel = btnCancel;
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 //                    Toast.makeText(Search.this, roomList.get(index).getRoomName(), Toast.LENGTH_SHORT).show();
 ////                    SubscribeRoomSession s = new SubscribeRoomSession();
 ////                    s.send("https://roomroomroom.herokuapp.com/Roomsession/subscribe");
-//                    String idr = roomList.get(index).getIdRoom();
-//                    String ss = roomList.get(index).getShiftSession();
+                        String idr = list.get(index).getIdRoom();
+                        String ss = list.get(index).getShiftSession();
 //                    FormatStringDate fmd = new FormatStringDate();
-//                    // conver
-//                    String d = fmd.dateFormat(roomList.get(index).getInDate());
-//                    String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+2;
-//                    Log.e(TAG, url);
-//                    UpdateRoomSession updateRoomSession= new UpdateRoomSession();
-//                    updateRoomSession.execute(url);
+                        // conver
+                        String d = fmd.dateFormat(list.get(index).getDate());
+//                    String idSubscriber = bookingList.get(index).getSubscriber();
+                        String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe/delete?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+2;
+                        Log.e(TAG, url);
+                        UpdateRoomSession updateRoomSession= new UpdateRoomSession();
+                        updateRoomSession.execute(url);
+                        finalBtnCancel.setEnabled(false);
 //                    getAllRoom();
-                }
-            });
+                    }
+                });
+            }else{
+                btnCancel.setEnabled(false);
+            }
 
-            row.addView(txtIdroom);
+
+//            row.addView(txtIdroom);
             row.addView(txtRoom);
             row.addView(txtShift);
             row.addView(txtDate);
@@ -184,5 +210,24 @@ public class ReservationHistory extends AppCompatActivity {
 
             bookingHistory_table.addView(row);
         }
+    }
+
+    String getIdEmp(){
+        StringBuilder sbId = new StringBuilder();
+
+        try{
+            FileInputStream fileInputId = openFileInput(Login.fileId);
+            BufferedReader idReader = new BufferedReader(new InputStreamReader(fileInputId));
+            String idStr;
+            while((idStr = idReader.readLine())!=null){
+                sbId.append(idStr).append("");
+            }
+            return sbId.toString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
