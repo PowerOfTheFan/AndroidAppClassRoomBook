@@ -1,5 +1,6 @@
 package com.example.android.teachingroomreservation;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.teachingroomreservation.ResultObject.RoomsessionNonApproved;
+import com.example.android.teachingroomreservation.handler.FormatStringDate;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
+import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ReservationConfirm extends AppCompatActivity {
@@ -25,6 +33,7 @@ public class ReservationConfirm extends AppCompatActivity {
     final String TAG = ReservationConfirm.class.getSimpleName();
     String url = "http://roomroomroom.herokuapp.com/Roomsession/nonapproved";
     ArrayList<RoomsessionNonApproved> nonApproveds;
+    String ID_EMP = null;
 
     TableLayout nonApprovedTable;
     @Override
@@ -36,6 +45,11 @@ public class ReservationConfirm extends AppCompatActivity {
         nonApprovedTable = findViewById(R.id.room_table_nonApproved);
 
         new GetRoomsessionNonApproved().execute(url);
+        ID_EMP = getIdEmp();
+        if(ID_EMP == null){
+            Intent intent = new Intent(this, Login.class);
+            startActivity(intent);
+        }
     }
 
     private class GetRoomsessionNonApproved extends AsyncTask<String, Void, Void> {
@@ -53,13 +67,13 @@ public class ReservationConfirm extends AppCompatActivity {
                     for(int i=0; i<jsonArray.length(); i++){
                         JSONArray obj = jsonArray.getJSONArray(i);
                         String idRoom = obj.getString(0);
-                        String roomNmae = obj.getString(1);
+                        String roomName = obj.getString(1);
                         String shiftSession = obj.getString(2);
                         String date = obj.getString(3);
                         String idEmp = obj.getString(4);
                         String nameEmp = obj.getString(5);
 
-                        RoomsessionNonApproved r = new RoomsessionNonApproved(idRoom, roomNmae, shiftSession, date, idEmp, nameEmp);
+                        RoomsessionNonApproved r = new RoomsessionNonApproved(idRoom, roomName, shiftSession, date, idEmp, nameEmp);
                         nonApproveds.add(r);
                     }
                 } catch (JSONException e) {
@@ -86,11 +100,12 @@ public class ReservationConfirm extends AppCompatActivity {
         }
     }
 
-    private void fillTable(ArrayList<RoomsessionNonApproved> nonApproveds) {
+    private void fillTable(final ArrayList<RoomsessionNonApproved> nonApproveds) {
         TableRow row;
         nonApprovedTable.removeAllViewsInLayout();
         TextView txtRoom, txtShift, txtDate, txtSubscriber;
-        Button btnOk, btnDelete;
+        Button btnOk;
+        Button btnDelete;
         TextView titleRoom, titleShift, titleDate, titleSubscriber;
 
         titleRoom = new TextView(this);
@@ -142,21 +157,45 @@ public class ReservationConfirm extends AppCompatActivity {
             final int index = i;
 
             // set onClick btn
+            final Button finalBtnOk = btnOk;
             btnOk.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 //                    Toast.makeText(Search.this, roomList.get(index).getRoomName(), Toast.LENGTH_SHORT).show();
 ////                    SubscribeRoomSession s = new SubscribeRoomSession();
 ////                    s.send("https://roomroomroom.herokuapp.com/Roomsession/subscribe");
-//                    String idr = roomList.get(index).getIdRoom();
-//                    String ss = roomList.get(index).getShiftSession();
-//                    FormatStringDate fmd = new FormatStringDate();
-//                    // conver
-//                    String d = fmd.dateFormat(roomList.get(index).getInDate());
-//                    String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+2;
-//                    Log.e(TAG, url);
-//                    UpdateRoomSession updateRoomSession= new UpdateRoomSession();
-//                    updateRoomSession.execute(url);
+                    String idr = nonApproveds.get(index).getIdRoom();
+                    String ss = nonApproveds.get(index).getShift();
+                    FormatStringDate fmd = new FormatStringDate();
+                    // conver
+                    String d = fmd.dateFormat(nonApproveds.get(index).getDate());
+
+                    String url = "https://roomroomroom.herokuapp.com/Roomsession/approve?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idApprover="+ID_EMP;
+                    Log.e(TAG, url);
+                    UpdateRoomSession updateRoomSession= new UpdateRoomSession();
+                    updateRoomSession.execute(url);
+                    finalBtnOk.setEnabled(false);
+//                    getAllRoom();
+                }
+            });
+            final Button finalBtnDelete = btnDelete;
+            btnDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Toast.makeText(Search.this, roomList.get(index).getRoomName(), Toast.LENGTH_SHORT).show();
+////                    SubscribeRoomSession s = new SubscribeRoomSession();
+////                    s.send("https://roomroomroom.herokuapp.com/Roomsession/subscribe");
+                    String idr = nonApproveds.get(index).getIdRoom();
+                    String ss = nonApproveds.get(index).getShift();
+                    FormatStringDate fmd = new FormatStringDate();
+                    // conver
+                    String d = fmd.dateFormat(nonApproveds.get(index).getDate());
+                    String idSubscriber = nonApproveds.get(index).getIdEmp();
+                    String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe/delete?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+idSubscriber;
+                    Log.e(TAG, url);
+                    UpdateRoomSession updateRoomSession= new UpdateRoomSession();
+                    updateRoomSession.execute(url);
+                    finalBtnDelete.setEnabled(false);
 //                    getAllRoom();
                 }
             });
@@ -170,5 +209,27 @@ public class ReservationConfirm extends AppCompatActivity {
 
             nonApprovedTable.addView(row);
         }
+    }
+
+    String getIdEmp(){
+        StringBuilder sbId = new StringBuilder();
+
+        try{
+            FileInputStream fileInputId = this.openFileInput(Login.fileId);
+            BufferedReader idReader = new BufferedReader(new InputStreamReader(fileInputId));
+            String idStr;
+            while((idStr = idReader.readLine())!=null){
+                sbId.append(idStr).append("");
+            }
+            System.out.println("@@@@@@@@@@@@@@@@ Seach getIdEmp: "+sbId.toString());
+            return sbId.toString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+//        return null;
     }
 }
