@@ -136,7 +136,7 @@ public class ReservationConfirm extends AppCompatActivity {
         nonApprovedTable.addView(row);
 
 
-
+        final FormatStringDate fmd = new FormatStringDate();
         for (int i=0; i < nonApproveds.size(); i++) {
             row = new TableRow(this);
 
@@ -149,7 +149,7 @@ public class ReservationConfirm extends AppCompatActivity {
 
             txtRoom.setText(nonApproveds.get(i).getRoomName());
             txtShift.setText(nonApproveds.get(i).getShift());
-            txtDate.setText(nonApproveds.get(i).getDate());
+            txtDate.setText(fmd.dateFormat(nonApproveds.get(i).getDate()));
             txtSubscriber.setText(nonApproveds.get(i).getNameEmp());
             btnOk.setText("Ok");
 //            btnOk.setWidth(0);
@@ -166,7 +166,7 @@ public class ReservationConfirm extends AppCompatActivity {
 ////                    s.send("https://roomroomroom.herokuapp.com/Roomsession/subscribe");
                     String idr = nonApproveds.get(index).getIdRoom();
                     String ss = nonApproveds.get(index).getShift();
-                    FormatStringDate fmd = new FormatStringDate();
+//                    FormatStringDate fmd = new FormatStringDate();
                     // conver
                     String d = fmd.dateFormat(nonApproveds.get(index).getDate());
 
