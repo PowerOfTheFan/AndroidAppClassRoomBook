@@ -1,6 +1,7 @@
 package com.example.android.teachingroomreservation;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.android.teachingroomreservation.handler.HttpHandler;
 import com.example.android.teachingroomreservation.ResultObject.RoomAvailable;
+import com.example.android.teachingroomreservation.handler.HttpPostRoomsession;
 import com.example.android.teachingroomreservation.handler.SubscribeRoomSession;
 
 import org.json.JSONArray;
@@ -54,9 +56,9 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
             BufferedReader idReader = new BufferedReader(new InputStreamReader(fileInputId));
             String idStr;
             while((idStr = idReader.readLine())!=null){
-                sbId.append(idStr).append("\n");
+                sbId.append(idStr).append("");
             }
-            return idStr;
+            return sbId.toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -72,6 +74,11 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
 
         // get IdEMP tu file
         ID_EMP = getIdEmp();
+        // check id exist
+        if(ID_EMP == null){
+            Intent intentLogin = new Intent(this, Login.class);
+            startActivity(intentLogin);
+        }
 
         btnDatePicker = findViewById(R.id.btn_date_addemptyroom);
         btnSearchRoom = findViewById(R.id.btn_search_addemptyroom); btnSearchRoom.setEnabled(false);
@@ -271,17 +278,9 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
                     int  shiftSession = Integer.parseInt(spnShift.getSelectedItem().toString());
                     String date = btnDatePicker.getText().toString();
                     int creator = Integer.parseInt(ID_EMP);
-                    SubscribeRoomSession s = new SubscribeRoomSession(idRoom, shiftSession, date, creator);
-                    s.send("https://roomroomroom.herokuapp.com/Roomsession/create");
-//                    String idr = roomList.get(index).getIdRoom();
-//                    String ss = roomList.get(index).getShiftSession();
-//                    FormatStringDate fmd = new FormatStringDate();
-//                    // conver
-//                    String d = fmd.dateFormat(roomList.get(index).getInDate());
-//                    String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+2;
-//                    Log.e(TAG, url);
-//                    UpdateRoomSession updateRoomSession= new UpdateRoomSession();
-//                    updateRoomSession.execute(url);
+                    HttpPostRoomsession s = new HttpPostRoomsession();
+                    s.send("https://roomroomroom.herokuapp.com/Roomsession/create?room="+idRoom+"&session="+shiftSession+"&date="+date+"&creator="+creator);
+                    new GetRoomAvailable().execute(url);
 //                    getAllRoom();
                 }
             });
