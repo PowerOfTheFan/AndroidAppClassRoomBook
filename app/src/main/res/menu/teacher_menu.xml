@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_seach"
+        android:title="Tìm phòng"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/menu_viewHistory"
+        android:title="Xem lịch sử"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/menu_deleteSubs"
+        android:title="Xóa đăng ký"
+        android:orderInCategory="100"/>
+    <item
+        android:id="@+id/menu_logout"
+        android:title="Đăng xuất"
+        android:orderInCategory="100"/>
+</menu>

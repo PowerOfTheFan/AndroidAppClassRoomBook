@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -295,5 +298,43 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
 
             room_table.addView(row);
         }
+    }
+
+    @Override
+    public boolean onCreatePanelMenu(int featureId, Menu menu) {
+
+        getMenuInflater().inflate(R.menu.admin_menu, menu);
+        return super.onCreatePanelMenu(featureId, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_create:
+                Intent intentAddEmpty = new Intent(this, AddEmptyRoom.class);
+                startActivity(intentAddEmpty);
+                break;
+            case R.id.menu_confirm:
+                Intent intentConfirm = new Intent(this, ReservationConfirm.class);
+                startActivity(intentConfirm);
+                break;
+            case R.id.menu_deleteCreate:
+                Intent intentDelete = new Intent(this, ReservationHistory.class);
+                startActivity(intentDelete);
+                break;
+            case R.id.menu_logout:
+                File dir = getFilesDir();
+                File idFile = new File(dir, Login.fileId);
+                File posFile = new File(dir, Login.filePos);
+                idFile.delete();
+                posFile.delete();
+                Intent intentLogin = new Intent(this, Login.class);
+                startActivity(intentLogin);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

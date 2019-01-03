@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -22,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -49,7 +52,7 @@ public class ReservationHistory extends AppCompatActivity {
             Intent intent = new Intent(this, Login.class);
             startActivity(intent);
         }
-        url = "https://roomroomroom.herokuapp.com/Roomsession/history/"+2;
+        url = "https://roomroomroom.herokuapp.com/Roomsession/history/"+ID_EMP;
         new GetRoomBookingHistory().execute(url);
     }
 
@@ -189,7 +192,7 @@ public class ReservationHistory extends AppCompatActivity {
                         // conver
                         String d = fmd.dateFormat(list.get(index).getDate());
 //                    String idSubscriber = bookingList.get(index).getSubscriber();
-                        String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe/delete?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+2;
+                        String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe/delete?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+ID_EMP;
                         Log.e(TAG, url);
                         UpdateRoomSession updateRoomSession= new UpdateRoomSession();
                         updateRoomSession.execute(url);
@@ -229,5 +232,44 @@ public class ReservationHistory extends AppCompatActivity {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public boolean onCreatePanelMenu(int featureId, Menu menu) {
+
+        getMenuInflater().inflate(R.menu.teacher_menu, menu);
+        return super.onCreatePanelMenu(featureId, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_seach:
+                Intent intentSearch = new Intent(this, Search.class);
+                startActivity(intentSearch);
+                break;
+            case R.id.menu_viewHistory:
+                Intent intentHis = new Intent(this, ReservationHistory.class);
+                startActivity(intentHis);
+                break;
+            case R.id.menu_deleteSubs:
+                Intent intentDelete = new Intent(this, ReservationHistory.class);
+                startActivity(intentDelete);
+                break;
+            case R.id.menu_logout:
+                File dir = getFilesDir();
+                File idFile = new File(dir, Login.fileId);
+                File posFile = new File(dir, Login.filePos);
+                idFile.delete();
+                posFile.delete();
+
+                Intent intentLogin = new Intent(this, Login.class);
+                startActivity(intentLogin);
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
