@@ -270,6 +270,8 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
             final int index = i;
 
             // set onClick btn
+//            final TableRow finalRow = row;
+            final Button finalBtnAddRoom = btnAddRoom;
             btnAddRoom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -280,8 +282,9 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
                     int creator = Integer.parseInt(ID_EMP);
                     HttpPostRoomsession s = new HttpPostRoomsession();
                     s.send("https://roomroomroom.herokuapp.com/Roomsession/create?room="+idRoom+"&session="+shiftSession+"&date="+date+"&creator="+creator);
-                    new GetRoomAvailable().execute(url);
-//                    getAllRoom();
+                    finalBtnAddRoom.setEnabled(false);
+//                    room_table.removeView(finalRow);
+//                    new GetRoomAvailable().execute(url);
                 }
             });
 
