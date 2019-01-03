@@ -23,6 +23,11 @@ import com.example.android.teachingroomreservation.handler.SubscribeRoomSession;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -37,13 +42,36 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
     private int cDate, cMonth, cYear;
 
     ArrayList<RoomAvailable> roomList;
+    String ID_EMP;
 
     private String url;
+    // get id emp
+    String getIdEmp(){
+        StringBuilder sbId = new StringBuilder();
+
+        try{
+            FileInputStream fileInputId = openFileInput(Login.fileId);
+            BufferedReader idReader = new BufferedReader(new InputStreamReader(fileInputId));
+            String idStr;
+            while((idStr = idReader.readLine())!=null){
+                sbId.append(idStr).append("\n");
+            }
+            return idStr;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addemptyroom);
+
+        // get IdEMP tu file
+        ID_EMP = getIdEmp();
 
         btnDatePicker = findViewById(R.id.btn_date_addemptyroom);
         btnSearchRoom = findViewById(R.id.btn_search_addemptyroom); btnSearchRoom.setEnabled(false);
@@ -242,7 +270,7 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
                     int idRoom = Integer.parseInt(roomList.get(index).getIdRoom());
                     int  shiftSession = Integer.parseInt(spnShift.getSelectedItem().toString());
                     String date = btnDatePicker.getText().toString();
-                    int creator = 1;
+                    int creator = Integer.parseInt(ID_EMP);
                     SubscribeRoomSession s = new SubscribeRoomSession(idRoom, shiftSession, date, creator);
                     s.send("https://roomroomroom.herokuapp.com/Roomsession/create");
 //                    String idr = roomList.get(index).getIdRoom();

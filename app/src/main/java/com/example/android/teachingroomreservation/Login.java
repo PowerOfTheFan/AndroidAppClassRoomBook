@@ -10,17 +10,28 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.android.teachingroomreservation.handler.Account;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class Login extends AppCompatActivity {
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Login extends AppCompatActivity implements View.OnClickListener{
 
     EditText Name, Pass;
     Button buttonPanelID;
 
     String emailEmp, idEmp, nameEmp, positionEmp; // pos = ADMIN
+//    public static String extraIDEmp = "idEmp";
+    public static String fileId = "idNote.txt";
+    public static String filePos = "idNote.txt";
 
     String TAG = Login.class.getSimpleName();
 
@@ -34,44 +45,87 @@ public class Login extends AppCompatActivity {
         Name = (EditText) findViewById(R.id.username_edtext);
         Pass = (EditText) findViewById(R.id.passwd_edtext);
         buttonPanelID = (Button) findViewById(R.id.login_button);
-//        Name.setText("Admin");
-//        Pass.setText("Admin");
+        buttonPanelID.setOnClickListener(this);
 
-        buttonPanelID.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String username = Name.getText().toString();
-                String Password = Pass.getText().toString();
+        // kiem tra account
+        checkAccount();
 
-                String url = "https://roomroomroom.herokuapp.com/employee/login?email=" + username + "&id=" + Password;
-                new GetEmployee().execute(url);
-                Toast.makeText(Login.this, emailEmp+"@@@@@@@@@@@@@@@@@@", Toast.LENGTH_SHORT).show();
-                // sau khi GetEmployee().execute(url) duoc thuc hien, neu emailEmp hoac idEmp... co gia tri thi login thanh cong
+    }
 
-                if (emailEmp == null) {
+    void checkAccount(){
+        StringBuilder sbId = new StringBuilder();
+        StringBuilder sbPos = new StringBuilder();
+        try {
+//            FileInputStream fileInputId = this.openFileInput(Login.fileId);
+            FileInputStream fileInputPos = this.openFileInput(Login.filePos);
+//            BufferedReader idReader = new BufferedReader(new InputStreamReader(fileInputId));
+            BufferedReader posReader = new BufferedReader(new InputStreamReader(fileInputPos));
 
-                    Toast.makeText(getApplicationContext(),"Login fail",Toast.LENGTH_LONG).show();
+//            String idStr;
+            String posStr;
+//            while ((idStr = idReader.readLine())!= null){
+//                sbId.append(idStr).append("\n");
+//            }
+            while ((posStr = posReader.readLine())!= null){
+                sbId.append(posStr).append("\n");
+            }
+//            System.out.println(sbId.toString());
+            System.out.println(sbPos.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if(sbPos.toString().equals("ADMIN")){
+            Intent intentAddEmptyRoom = new Intent(this, AddEmptyRoom.class);
+            startActivity(intentAddEmptyRoom);
+        }else {
+            Intent intentSearch = new Intent(this, Search.class);
+            startActivity(intentSearch);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == buttonPanelID){
+            String username = Name.getText().toString();
+            String Password = Pass.getText().toString();
+
+            String url = "https://roomroomroom.herokuapp.com/employee/login?email=" + username + "&id=" + Password;
+            new GetEmployee().execute(url);
+            Toast.makeText(Login.this, emailEmp+"@@@@@@@@@@@@@@@@@@", Toast.LENGTH_SHORT).show();
+            if (emailEmp == null) {
+                Toast.makeText(getApplicationContext(),"Login fail",Toast.LENGTH_LONG).show();
+            }else {
+                setEmailEmp(null);
+                // ghi file
+                try {
+                    FileOutputStream osId = this.openFileOutput(fileId, MODE_PRIVATE);
+                    osId.write(idEmp.getBytes());
+                    osId.close();
+
+                    FileOutputStream osPos = this.openFileOutput(filePos, MODE_PRIVATE);
+                    osPos.write(idEmp.getBytes());
+                    osPos.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                else {
-                    setEmailEmp(null);
-                    Toast.makeText(getApplicationContext(), getPositionEmp(), Toast.LENGTH_LONG).show();
-                    if(getPositionEmp().equals("ADMIN")){
-                        // goi acctivity cua admin, chuyen idEMP sang
 
-                        Intent mh2 = new Intent(Login.this, AddEmptyRoom.class);
-                        startActivity(mh2);
-                    }else{
-                        //goiacctivity teacher
-//                        Toast.makeText(getApplicationContext(), R.string.loginsuccess, Toast.LENGTH_LONG).show();
-                        Intent mh2 = new Intent(Login.this, Search.class);
-                        startActivity(mh2);
-                    }
-                    // kiem pos = admin. neu true thi goi activity mac dinh cuar admin, false goi acctivity cuar teacher
-                    // chuyen idEmp sang acctivity duoc goi
 
+                if(getPositionEmp().equals("ADMIN")){
+                    Intent intentAddEmptyRoom = new Intent(this, AddEmptyRoom.class);
+//                    intentAddEmptyRoom.putExtra(extraIDEmp, idEmp);
+                    startActivity(intentAddEmptyRoom);
+                }else{
+                    Intent intentSearch = new Intent(this, Search.class);
+//                    intentLogin.putExtra(extraIDEmp, idEmp);
+                    startActivity(intentSearch);
                 }
             }
-        });
+        }
     }
 
     private class GetEmployee extends AsyncTask<String, Void, Void> {
@@ -85,7 +139,6 @@ public class Login extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... urlStr) {
             HttpHandler sh = new HttpHandler();
-//            roomList = new ArrayList<>();
             String url = urlStr[0];
             String jsonStr = sh.makeServiceCall(url);
 
@@ -142,7 +195,6 @@ public class Login extends AppCompatActivity {
 
     public void setEmailEmp(String emailEmp) {
         this.emailEmp = emailEmp;
-        System.out.println("setEmailEmp: " + emailEmp);
     }
 
     public String getIdEmp() {
@@ -169,14 +221,4 @@ public class Login extends AppCompatActivity {
         this.positionEmp = positionEmp;
     }
 }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        super.onOptionsItemSelected(item);
-//        switch (item.getItemId()) {
-//            case R.id.login_button:
-//                break;
-//        }
-//        return true;
-//    }
 

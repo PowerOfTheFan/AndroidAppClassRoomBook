@@ -29,6 +29,11 @@ import com.example.android.teachingroomreservation.handler.UpdateRoomSession;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -46,15 +51,40 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     TableLayout room_table;
     private int cDate, cMonth, cYear;
 
+    String ID_EMP;
+
 
     ArrayList<RoomSessionAvailable> roomList;
 
     private String url;
 
+    String getIdEmp(){
+        StringBuilder sbId = new StringBuilder();
+
+        try{
+            FileInputStream fileInputId = this.openFileInput(Login.fileId);
+            BufferedReader idReader = new BufferedReader(new InputStreamReader(fileInputId));
+            String idStr;
+            while((idStr = idReader.readLine())!=null){
+                sbId.append(idStr).append("\n");
+            }
+            return idStr;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        Intent intent = getIntent();
+        ID_EMP = getIdEmp();
+
 
         notifyMgr=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
@@ -273,7 +303,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                     FormatStringDate fmd = new FormatStringDate();
                     // conver
                     String d = fmd.dateFormat(roomList.get(index).getInDate());
-                    String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+2;
+                    String url = "https://roomroomroom.herokuapp.com/Roomsession/subscribe?idRoom="+idr+"&idSession="+ss+"&date="+d+"&idSubscriber="+ ID_EMP;
                     Log.e(TAG, url);
                     UpdateRoomSession updateRoomSession= new UpdateRoomSession();
                     updateRoomSession.execute(url);
@@ -323,49 +353,3 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     }
 
 }
-
-//if(v == btnShift){
-//        String url = "https://roomroomroom.herokuapp.com/Roomsession/available";
-//final ProgressDialog dialog;
-//        LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout1);
-////            EditText edtResult = new EditText(this);
-//        //---------------------------------------------------
-//        dialog = new ProgressDialog(this);
-//        dialog.setMessage("Loading....");
-//        dialog.show();
-//        //-----------------------------------------------------
-//        StringRequest request = new StringRequest(url, new Response.Listener<String>() {
-//@Override
-//public void onResponse(String string) {
-//        System.out.println(string);
-//        parseJsonData(string);
-//        }
-//        }, new Response.ErrorListener() {
-//@Override
-//public void onErrorResponse(VolleyError volleyError) {
-//        Toast.makeText(getApplicationContext(), "Some error occurred!!", Toast.LENGTH_SHORT).show();
-//        dialog.dismiss();
-//        }
-//        });
-//
-//        RequestQueue rQueue = Volley.newRequestQueue(Search.this);
-//        rQueue.add(request);
-//        }
-
-//    void parseJsonData(String jsonString) {
-//        try {
-////            JSONObject object = new JSONObject(jsonString);
-//            JSONArray fruitsArray =  new JSONArray(jsonString);
-////            JSONArray fruitsArray = object.getJSONArray("");
-//            ArrayList al = new ArrayList();
-//
-//            for(int i = 0; i < fruitsArray.length(); ++i) {
-//                al.add(fruitsArray.getString(i));
-//            }
-//
-//            ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, al);
-//            listArr.setAdapter(adapter);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//    }
