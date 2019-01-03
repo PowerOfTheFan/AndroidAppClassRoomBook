@@ -31,7 +31,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     String emailEmp, idEmp, nameEmp, positionEmp; // pos = ADMIN
 //    public static String extraIDEmp = "idEmp";
     public static String fileId = "idNote.txt";
-    public static String filePos = "idNote.txt";
+    public static String filePos = "idPos.txt";
 
     String TAG = Login.class.getSimpleName();
 
@@ -53,6 +53,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
     }
 
     void checkAccount(){
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ login checkAccount exe");
         StringBuilder sbId = new StringBuilder();
         StringBuilder sbPos = new StringBuilder();
         try {
@@ -67,10 +68,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
 //                sbId.append(idStr).append("\n");
 //            }
             while ((posStr = posReader.readLine())!= null){
-                sbId.append(posStr).append("\n");
+                sbPos.append(posStr).append("\n");
             }
 //            System.out.println(sbId.toString());
-            System.out.println(sbPos.toString());
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ login checkAccount"+sbPos.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -80,7 +81,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
         if(sbPos.toString().equals("ADMIN")){
             Intent intentAddEmptyRoom = new Intent(this, AddEmptyRoom.class);
             startActivity(intentAddEmptyRoom);
-        }else {
+        }
+        if(sbPos.toString().equals("TEACHER")){
             Intent intentSearch = new Intent(this, Search.class);
             startActivity(intentSearch);
         }
@@ -106,7 +108,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                     osId.close();
 
                     FileOutputStream osPos = this.openFileOutput(filePos, MODE_PRIVATE);
-                    osPos.write(idEmp.getBytes());
+                    osPos.write(positionEmp.getBytes());
+                    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@22@@@@@@ "+positionEmp);
                     osPos.close();
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -115,11 +118,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener{
                 }
 
 
-                if(getPositionEmp().equals("ADMIN")){
+                if(positionEmp.equals("ADMIN")){
                     Intent intentAddEmptyRoom = new Intent(this, AddEmptyRoom.class);
 //                    intentAddEmptyRoom.putExtra(extraIDEmp, idEmp);
                     startActivity(intentAddEmptyRoom);
-                }else{
+                }
+                if(positionEmp.equals("TEACHER")){
                     Intent intentSearch = new Intent(this, Search.class);
 //                    intentLogin.putExtra(extraIDEmp, idEmp);
                     startActivity(intentSearch);

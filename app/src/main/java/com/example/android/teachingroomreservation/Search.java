@@ -52,7 +52,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     TableLayout room_table;
     private int cDate, cMonth, cYear;
 
-    String ID_EMP;
+    String ID_EMP = null;
 
 
     ArrayList<RoomSessionAvailable> roomList;
@@ -69,13 +69,16 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
             while((idStr = idReader.readLine())!=null){
                 sbId.append(idStr).append("\n");
             }
-            return idStr;
+            System.out.println("@@@@@@@@@@@@@@@@ Seach getIdEmp: "+sbId.toString());
+            return sbId.toString();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return null;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+//        return null;
     }
 
     @Override
@@ -85,6 +88,11 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         Intent intent = getIntent();
         ID_EMP = getIdEmp();
+        System.out.println("@@@@@@@@@@@@@@@ Search :"+ID_EMP);
+        if(ID_EMP == null){
+            Intent intentLogin = new Intent(this, Login.class);
+            startActivity(intentLogin);
+        }
 
 
         notifyMgr=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
