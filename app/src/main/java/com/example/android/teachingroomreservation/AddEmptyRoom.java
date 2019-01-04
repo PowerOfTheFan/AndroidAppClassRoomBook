@@ -19,6 +19,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.teachingroomreservation.handler.CompareDay;
 import com.example.android.teachingroomreservation.handler.HttpHandler;
 import com.example.android.teachingroomreservation.ResultObject.RoomAvailable;
 import com.example.android.teachingroomreservation.handler.HttpPostRoomsession;
@@ -110,6 +111,7 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
 
         if(v == btnDatePicker){
+            btnSearchRoom.setEnabled(false);
             // Get current date
             final Calendar c = Calendar.getInstance();
             cDate = c.get(Calendar.DAY_OF_MONTH);
@@ -135,7 +137,14 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
                         }
                     }, cYear, cMonth, cDate);
             datePickerDialog.show();
-            btnSearchRoom.setEnabled(true);
+            CompareDay cpd = new CompareDay();
+            if(cpd.differanceDay(btnDatePicker.getText().toString()) < 1 || cpd.differanceDay(btnDatePicker.getText().toString()) > 30){
+                btnSearchRoom.setEnabled(false);
+                room_table.removeAllViewsInLayout();
+            }else{
+                btnSearchRoom.setEnabled(true);
+            }
+
         }
 
         if (v == btnSearchRoom) {
