@@ -379,7 +379,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                 startActivity(intentHis);
                 break;
             case R.id.menu_deleteSubs:
-                Intent intentDelete = new Intent(this, ReservationHistory.class);
+                Intent intentDelete = new Intent(this, RoomsessionRemove.class);
                 startActivity(intentDelete);
                 break;
             case R.id.menu_logout:

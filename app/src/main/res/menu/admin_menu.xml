@@ -13,6 +13,10 @@
         android:title="Xóa lịch"
         android:orderInCategory="100"/>
     <item
+        android:id="@+id/menu_deleteApproved"
+        android:title="Xóa Duyệt"
+        android:orderInCategory="100"/>
+    <item
         android:id="@+id/menu_logout"
         android:title="Đăng xuất"
         android:orderInCategory="100"/>

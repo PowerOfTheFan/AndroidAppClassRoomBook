@@ -321,8 +321,12 @@ public class AddEmptyRoom extends AppCompatActivity implements View.OnClickListe
                 startActivity(intentConfirm);
                 break;
             case R.id.menu_deleteCreate:
-                Intent intentDelete = new Intent(this, ReservationHistory.class);
+                Intent intentDelete = new Intent(this, RoomsessionRemove.class);
                 startActivity(intentDelete);
+                break;
+            case R.id.menu_deleteApproved:
+                Intent intApprovedRemove = new Intent(this, RoomApprovedRemove.class);
+                startActivity(intApprovedRemove);
                 break;
             case R.id.menu_logout:
                 File dir = getFilesDir();
