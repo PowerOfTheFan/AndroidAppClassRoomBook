@@ -18,10 +18,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            88t8
+            /////////////////
         </activity>
-        <activity android:name=".EmptyRoomList" />
-        <activity android:name=".Search" />
+        <activity android:name=".mhbsdb" />
+        <activity android:name=".Searchsdsf" />
         <activity android:name=".AddEmptyRoom" />
+        /////
         <activity android:name=".ReservationHistory" />
         <activity android:name=".ReservationConfirm" />
         <activity android:name=".RoomApprovedRemove" />
