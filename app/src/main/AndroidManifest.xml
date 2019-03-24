@@ -15,10 +15,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            /////////////////////////
+            ///////////////////////
+            ......................
         </activity>
-        <activity android:name=".Login" />
+        <activity android:name=".Loginnn" />
         <activity android:name=".EmptyRoomList" />
-        <activity android:name=".Search" />
+        <activity android:name=".Se" />
         <activity android:name=".ReservationHistory" />
         <activity android:name=".AddEmptyRoom" />
         <activity android:name=".ReservationConfirm" />
